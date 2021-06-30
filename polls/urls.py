@@ -8,3 +8,7 @@ urlpatterns = [
     path('<int:question_id>/vote/', views.vote, name='vote'),
 
 ]
+'''urlpatterns = [
+    path('polls/', views.Question_list),
+    path('polls/<int:pk>/', views.Question_detail),
+]'''
