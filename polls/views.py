@@ -12,18 +12,17 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from polls.models import Question
-from polls.serializers import QuestionSerializer
+from polls.serializer import QuestionSerializer
+from django.core import serializers
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
-
     def get_queryset(self):
         """Return the last five published questions."""
         return Question.objects.filter(
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:5]
-
 
 class DetailView(generic.DetailView):
     model = Question
@@ -100,3 +99,7 @@ def Question_detail(request, pk):
     elif request.method == 'DELETE':
         Questions.delete()
         return HttpResponse(status=204)
+@csrf_exempt
+def Question_json(request):
+    question_json=serializers.serialize("json",Question.objects.all())
+    return HttpResponse(question_json, content_type="application/json")
